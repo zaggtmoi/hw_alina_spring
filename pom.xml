@@ -16,6 +16,7 @@
         <!-- lib versions -->
         <postgresql.version>42.5.5</postgresql.version>
         <logback.version>1.5.18</logback.version>
+        <kafka.version>3.3.9</kafka.version>
         <testcontainers.version>1.21.3</testcontainers.version>
 
         <!-- spring boot versions -->
@@ -26,6 +27,17 @@
     </properties>
 
     <dependencies>
+        <!-- messaging -->
+        <dependency>
+            <groupId>org.springframework.kafka</groupId>
+            <artifactId>spring-kafka</artifactId>
+            <version>${kafka.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-mail</artifactId>
+            <version>${spring.boot.version}</version>
+        </dependency>
         <!--    DB    -->
         <dependency>
             <groupId>org.postgresql</groupId>
