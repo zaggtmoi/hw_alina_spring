@@ -2,6 +2,7 @@ package org.example.service;
 
 import lombok.NonNull;
 import org.example.dao.UserRepository;
+import org.example.kafka.EmailProducer;
 import org.example.model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,11 +16,13 @@ public class UserService {
 
     private static final Logger logger = LoggerFactory.getLogger(UserService.class);
 
-    private final UserRepository userRepository;
+    final UserRepository userRepository;
+    final EmailProducer emailProducer;
 
     @Autowired
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, EmailProducer emailProducer) {
         this.userRepository = userRepository;
+        this.emailProducer = emailProducer;
     }
 
     public User getById(long id) {
@@ -33,6 +36,10 @@ public class UserService {
         user.setCreatedAt(Instant.now());
         //todo log
         userRepository.save(user);
+        if (user.getEmail() != null) {
+            emailProducer.sendEmailNotification(user.getEmail(),
+                    "Здравствуйте! Ваш аккаунт на сайте ваш сайт был успешно создан");
+        }
     }
 
     public void update(User user) {
@@ -42,7 +49,12 @@ public class UserService {
 
     public void delete(long id) {
         //todo log
+        User user = getById(id);
         userRepository.deleteById(id);
+        if (user.getEmail() != null) {
+            emailProducer.sendEmailNotification(user.getEmail(),
+                    "Здравствуйте! Ваш аккаунт был удалён");
+        }
     }
 
     private String getUserString(User user) {
