@@ -4,6 +4,7 @@ import lombok.NonNull;
 import org.example.dao.UserRepository;
 import org.example.kafka.EmailProducer;
 import org.example.model.User;
+import org.example.model.UserDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,11 +26,15 @@ public class UserService {
         this.emailProducer = emailProducer;
     }
 
-    public User getById(long id) {
-        User user = userRepository.findById(id).orElse(null);
+    public UserDTO getById(long id) {
+        User user = getUserById(id);
         String infoMsg = "Got user by id " + id + ": " + getUserString(user);
         logger.info(infoMsg);
-        return user;
+        return new UserDTO(user);
+    }
+
+    private User getUserById(long id) {
+        return userRepository.findById(id).orElse(null);
     }
 
     public void createNewUser(@NonNull User user) {
@@ -42,14 +47,15 @@ public class UserService {
         }
     }
 
-    public void update(User user) {
+    public UserDTO update(UserDTO user) {
         //todo log
-        userRepository.save(user);
+        User saved = userRepository.save(user.getUser());
+        return new UserDTO(saved);
     }
 
     public void delete(long id) {
         //todo log
-        User user = getById(id);
+        User user = getUserById(id);
         userRepository.deleteById(id);
         if (user.getEmail() != null) {
             emailProducer.sendEmailNotification(user.getEmail(),
