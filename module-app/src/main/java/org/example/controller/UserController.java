@@ -14,13 +14,17 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "UserController", description = "simple CRUD operations over Users")
 public class UserController {
 
+    final UserService userService;
+
     @Autowired
-    UserService userService;
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
 
     @Operation(summary = "create new user and get entity with new id")
-    @PostMapping
+    @PostMapping("/new")
     public ResponseEntity<UserDTO> createUser(@RequestBody UserDTO user) {
-        return ResponseEntity.ok(userService.update(user));
+        return ResponseEntity.ok(userService.createNewUser(user));
     }
 
     @Operation(summary = "get user data by id or null")
@@ -28,6 +32,22 @@ public class UserController {
     public ResponseEntity<UserDTO> getUserById(@PathVariable Long id) {
         UserDTO user = userService.getById(id);
         return ResponseEntity.ok(user);
+    }
+
+    @PutMapping("/update")
+    public ResponseEntity<UserDTO> updateUser(@RequestBody UserDTO userDetails) {
+        UserDTO user = userService.update(userDetails);
+        if (user != null) {
+            return ResponseEntity.ok(user);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
+        userService.delete(id);
+        return ResponseEntity.ok().build();
     }
 
 }

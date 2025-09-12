@@ -1,27 +1,34 @@
 package org.example.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+
 import java.time.Instant;
 
 @Entity
-@Table(name = "\"users\"")
-@NoArgsConstructor
 @Getter
 @Setter
+@NoArgsConstructor
+@Table(name = "users")
 public class User {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_id_gen")
-    @SequenceGenerator(name = "user_id_gen", sequenceName = "user_id_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "users_id_gen")
+    @SequenceGenerator(name = "users_id_gen", sequenceName = "user_id_seq", allocationSize = 1)
     @Column(name = "id", nullable = false)
     private Long id;
 
+    @Size(max = 200)
+    @NotNull
     @Column(name = "name", nullable = false, length = 200)
     private String name;
 
+    @Size(max = 254)
     @Column(name = "email", length = 254)
     private String email;
 
@@ -35,18 +42,5 @@ public class User {
         this.name = name;
         this.email = email;
         this.age = age;
-    }
-
-    @Override
-    public String toString() {
-        StringBuilder builder = new StringBuilder(id == null ? "no id" : id.toString());
-        builder.append(": ").append(name);
-        if (age != null) {
-            builder.append(" (").append(age).append(") ");
-        }
-        if (email != null) {
-            builder.append(" - ").append(email);
-        }
-        return builder.toString();
     }
 }

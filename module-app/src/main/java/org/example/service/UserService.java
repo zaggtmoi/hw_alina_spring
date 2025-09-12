@@ -37,14 +37,16 @@ public class UserService {
         return userRepository.findById(id).orElse(null);
     }
 
-    public void createNewUser(@NonNull User user) {
+    public UserDTO createNewUser(@NonNull UserDTO userDto) {
+        User user = userDto.getUser();
         user.setCreatedAt(Instant.now());
         //todo log
-        userRepository.save(user);
+        User saved = userRepository.save(user);
         if (user.getEmail() != null) {
             emailProducer.sendEmailNotification(user.getEmail(),
                     "Здравствуйте! Ваш аккаунт на сайте ваш сайт был успешно создан");
         }
+        return new UserDTO(saved);
     }
 
     public UserDTO update(UserDTO user) {
