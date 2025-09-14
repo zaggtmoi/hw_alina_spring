@@ -1,0 +1,31 @@
+version: '3.8' # версия синтаксиса этого файла
+
+services:
+  # Сервис Spring Boot приложения (бэкенд)
+  backend-app:
+    build: ./module-app # Путь к директории с Dockerfile для бэкенда
+    ports:
+      - "8080:8080" # хост : контейнер
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/test
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=admin
+    depends_on:
+      - db
+
+  # to dooo | повторить конфигурацию для каждого сервиса
+
+  # Сервис PostgreSQL
+  db:
+    image: postgres:14
+    ports:
+      - "5432:5432" # Порт базы данных
+    volumes:
+      - db_data:/var/lib/postgresql/data # Сохранение данных базы данных
+    environment:
+      - POSTGRES_DB=test
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=admin
+
+volumes:
+  db_data:
