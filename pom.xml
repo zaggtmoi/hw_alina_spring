@@ -12,6 +12,7 @@
     <modules>
         <module>module-app</module>
         <module>module-kafka</module>
+        <module>service-discovery</module>
     </modules>
 
     <properties>
@@ -33,6 +34,41 @@
 
         <!--  documentation version  -->
         <swagger.starter.version>2.8.12</swagger.starter.version>
+
+        <!--  service discovery  -->
+        <eureka.version>4.3.0</eureka.version>
     </properties>
 
+
+    <dependencies>
+        <!-- lombok -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>${lombok.version}</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>${spring.boot.version}</version>
+            </plugin>
+            <plugin> <!-- fix err with lombok getter/setter generator -->
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                            <version>${lombok.version}</version>
+                        </path>
+                    </annotationProcessorPaths>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>
